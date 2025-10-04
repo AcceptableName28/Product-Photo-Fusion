@@ -81,6 +81,8 @@ const App: React.FC = () => {
   const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([]);
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState<boolean>(false);
   
+  const [outputAspectRatio, setOutputAspectRatio] = useState<string>('original');
+
   const staticSuggestions = [
     "Make the character wear the item",
     "Have the character hold the object",
@@ -121,7 +123,7 @@ const App: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const result = await generateFusedImage(characterImage.file, productImage.file, prompt);
+      const result = await generateFusedImage(characterImage.file, productImage.file, prompt, outputAspectRatio);
       setGeneratedImage(result);
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
@@ -145,7 +147,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [characterImage, productImage, prompt]);
+  }, [characterImage, productImage, prompt, outputAspectRatio]);
   
   const handleReset = () => {
     setCharacterImage(null);
@@ -155,6 +157,7 @@ const App: React.FC = () => {
     setError(null);
     setIsLoading(false);
     setDynamicSuggestions([]);
+    setOutputAspectRatio('original');
   }
 
   const handleDownload = () => {
@@ -213,6 +216,7 @@ const App: React.FC = () => {
 
   const isButtonDisabled = !characterImage || !productImage || isLoading;
   const suggestionsToShow = dynamicSuggestions.length > 0 ? dynamicSuggestions : staticSuggestions;
+  const aspectRatios = ['original', '1:1', '16:9', '9:16', '4:3', '3:4'];
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-8">
@@ -240,7 +244,7 @@ const App: React.FC = () => {
             />
           </div>
 
-          <div className="mb-8">
+          <div className="mb-6">
             <label htmlFor="prompt-input" className="block mb-2 text-lg font-semibold text-gray-300">
               Additional Instructions (Optional)
             </label>
@@ -259,6 +263,28 @@ const App: React.FC = () => {
               hasBothImages={!!characterImage && !!productImage}
             />
           </div>
+          
+          <div className="mb-8">
+            <label className="block mb-3 text-lg font-semibold text-gray-300 text-center">
+              Output Aspect Ratio
+            </label>
+            <div className="flex flex-wrap justify-center gap-3">
+              {aspectRatios.map(ratio => (
+                <button
+                  key={ratio}
+                  onClick={() => setOutputAspectRatio(ratio)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                    outputAspectRatio === ratio
+                      ? 'bg-blue-600 text-white shadow-lg ring-2 ring-blue-400'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  {ratio === 'original' ? 'Original' : ratio}
+                </button>
+              ))}
+            </div>
+          </div>
+
 
           <div className="flex justify-center items-center gap-4 mb-8">
             <button

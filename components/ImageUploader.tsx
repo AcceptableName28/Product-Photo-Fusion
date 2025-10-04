@@ -1,4 +1,3 @@
-
 import React, { useRef, useCallback } from 'react';
 import type { ImageFile } from '../types';
 
@@ -64,7 +63,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ title, onImageUpload, ima
         onClick={handleClick}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-gray-600 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 hover:border-blue-500 transition-colors duration-300"
+        className="relative flex flex-col items-center justify-center w-full aspect-square border-2 border-gray-600 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 hover:border-blue-500 transition-colors duration-300"
       >
         {imagePreviewUrl ? (
           <img src={imagePreviewUrl} alt="Preview" className="object-contain w-full h-full rounded-lg" />

@@ -50,7 +50,12 @@ export const generatePromptSuggestions = async (characterImageFile: File, produc
 };
 
 
-export const generateFusedImage = async (characterImageFile: File, productImageFile: File, userPrompt: string): Promise<string> => {
+export const generateFusedImage = async (
+  characterImageFile: File, 
+  productImageFile: File, 
+  userPrompt: string, 
+  outputAspectRatio: string
+): Promise<string> => {
   if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
   }
@@ -62,6 +67,11 @@ export const generateFusedImage = async (characterImageFile: File, productImageF
 
   const defaultInstruction = 'Make the character from the first image interact with or use the product from the second image.';
   const userInstruction = userPrompt && userPrompt.trim() !== '' ? userPrompt : defaultInstruction;
+  
+  const dimensionRule = outputAspectRatio === 'original'
+    ? "The final image MUST have the same dimensions and aspect ratio as the Character Image (Image 1)."
+    : `The final image MUST have a ${outputAspectRatio} aspect ratio.`;
+
 
   const prompt = `You are an expert image editor. Your task is to realistically merge a product into a character's image.
 
@@ -75,7 +85,7 @@ export const generateFusedImage = async (characterImageFile: File, productImageF
 2.  **Full Product Integration:** The *entire* product from Image 2 must be realistically integrated. **Do not just copy a logo, graphic, or texture from the product.** For example, if the goal is for the character to wear a t-shirt from Image 2, the final image must show the character wearing the *complete t-shirt* (including its color, shape, and fabric), not just the graphic from the t-shirt pasted onto their original clothing.
 3.  **High-Fidelity Detail Transfer:** All visual details from the product in Image 2 must be transferred. This includes all graphics, logos, text, patterns, and textures. Ensure the final representation is a faithful and complete reproduction of the product's design.
 4.  **Preserve Style:** The final image's artistic style, lighting, and overall aesthetic MUST exactly match the Character Image (Image 1).
-5.  **Preserve Dimensions:** The final image MUST have the same dimensions and aspect ratio as the Character Image (Image 1).
+5.  **Dimensions:** ${dimensionRule}
 6.  **No Additions:** Do not add any new elements, characters, or complex backgrounds. Only modify what is necessary to combine the character and product naturally.
 `;
 
