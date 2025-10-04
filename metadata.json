@@ -1,0 +1,5 @@
+{
+  "name": "Nano Character Fusion",
+  "description": "Upload a character image and a product image, and let Nano Banana (gemini-2.5-flash-image) generate a new image of your character using the product, preserving the original style and dimensions.",
+  "requestFramePermissions": []
+}
